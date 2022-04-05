@@ -48,4 +48,7 @@ describe('CircularBuffer', () => {
     expectRange(buffer, ['3', '4', '5'])
     expect(() => buffer.read()).toThrow(BufferEmptyError)
   })
+
+  // TODO: test 0 and 1 sizes
+  // TODO: test length and cursor increase
 })
