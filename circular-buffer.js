@@ -5,14 +5,16 @@
 
 class CircularBuffer {
   #arr
-  #size
+  #buffer_size
+  #length
   #tail
   #head
   #next
 
   constructor(size) {
-    this.#size = size
+    this.#buffer_size = size
     this.#arr = new Array(size)
+    this.#length = 0
     this.#tail = 0
     this.#head = 0
     this.#next = 0
@@ -21,8 +23,8 @@ class CircularBuffer {
   write(value) {
     // TODO: handle 0 and 1 sizes
 
-    if (this.#next === this.#tail && this.#next !== this.#head) {
-      /// full and not first write
+    if (this.#length === this.#buffer_size) {
+      /// full
       throw new BufferFullError()
     }
 
@@ -30,12 +32,13 @@ class CircularBuffer {
     this.#arr[this.#next] = value
 
     /// increase cursors
+    this.#length = this.#length + 1
     this.#head = this.#next
-    this.#next = (this.#next + 1) % this.#size
+    this.#next = (this.#next + 1) % this.#buffer_size
   }
 
   read() {
-    if (this.#arr[this.#tail] === undefined) {
+    if (this.#length === 0) {
       /// empty
       throw new BufferEmptyError()
     }
@@ -48,20 +51,23 @@ class CircularBuffer {
 
     /// increase cursors
     if (this.#next === this.#tail) {
-      this.#tail = (this.#tail + 1) % this.#size
+      /// full, increase tail as well
+      this.#tail = (this.#tail + 1) % this.#buffer_size
     }
     this.#head = this.#next
-    this.#next = (this.#next + 1) % this.#size
+    this.#next = (this.#next + 1) % this.#buffer_size
   }
 
   clear() {
-    if (this.#head === this.#tail) {
+    if (this.#length === 0) {
       /// empty, no more to clear
       throw new BufferEmptyError()
     }
 
     this.#arr[this.#tail] = undefined
-    this.#tail = (this.#tail + 1) % this.#size
+
+    this.#length = this.#length - 1
+    this.#tail = (this.#tail + 1) % this.#buffer_size
   }
 }
 

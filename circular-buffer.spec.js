@@ -11,7 +11,6 @@ describe('CircularBuffer', () => {
   const expectRange = (buffer, expectValues) => {
     expectValues.forEach((value, index) => {
       expect(buffer.read()).toBe(value)
-      if (index === expectValues.length - 1) return
       buffer.clear()
     })
   }
