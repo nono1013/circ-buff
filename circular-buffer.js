@@ -57,7 +57,7 @@ class CircularBuffer {
   clear() {
     if (this.#head === this.#tail) {
       /// empty, no more to clear
-      return
+      throw new BufferEmptyError()
     }
 
     this.#arr[this.#tail] = undefined
