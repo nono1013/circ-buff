@@ -47,7 +47,8 @@ class CircularBuffer {
       throw new BufferFullError()
     }
 
-    const next = (this.#head + 1) % this.#buffer_size
+    const next =
+      this.#length === 0 ? this.#head : (this.#head + 1) % this.#buffer_size
 
     this.#set(next, value)
 
@@ -63,7 +64,6 @@ class CircularBuffer {
     if (this.#empty()) {
       throw new BufferEmptyError()
     }
-    console.log(this.#arr)
     return this.#get(this.#tail)
   }
 
@@ -71,7 +71,9 @@ class CircularBuffer {
     if (this.#buffer_size === 0) {
       throw new BufferFullError()
     }
-    const next = (this.#head + 1) % this.#buffer_size
+
+    const next =
+      this.#length === 0 ? this.#head : (this.#head + 1) % this.#buffer_size
 
     this.#set(next, value)
 

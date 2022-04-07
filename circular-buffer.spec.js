@@ -10,7 +10,7 @@ describe('CircularBuffer', () => {
   }
 
   const expectRange = (buffer, expectValues) => {
-    expectValues.forEach((value, index) => {
+    expectValues.forEach((value) => {
       expect(buffer.read()).toBe(value)
       buffer.clear()
     })
@@ -94,5 +94,36 @@ describe('CircularBuffer', () => {
 
     expectRange(buffer, ['4', '5', '6'])
     expect(() => buffer.read()).toThrow(BufferEmptyError)
+  })
+
+  test('force writes only', () => {
+    const buffer = new CircularBuffer(2)
+    buffer.forceWrite('1')
+    expect(buffer.read()).toBe('1')
+    buffer.forceWrite('2')
+    expect(buffer.read()).toBe('1')
+    buffer.forceWrite('3')
+    expect(buffer.read()).toBe('2')
+  })
+
+  test('non-string elements work', () => {
+    const buffer = new CircularBuffer(1)
+    buffer.write(1)
+    expect(buffer.read()).toBe(1)
+    buffer.clear()
+
+    buffer.write({
+      test_1: 1,
+      test_2: 2,
+    })
+    expect(buffer.read()).toEqual({
+      test_1: 1,
+      test_2: 2,
+    })
+    buffer.clear()
+
+    buffer.write(true)
+    expect(buffer.read()).toBe(true)
+    buffer.clear()
   })
 })
