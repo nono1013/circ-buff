@@ -1,6 +1,7 @@
 import CircularBuffer, {
   BufferFullError,
   BufferEmptyError,
+  BufferConstructorError,
 } from './circular-buffer'
 
 describe('CircularBuffer', () => {
@@ -26,6 +27,25 @@ describe('CircularBuffer', () => {
     expect(buffer.read()).toBe('1')
   })
 
+  test('zero sized buffer read fails', () => {
+    const buffer = new CircularBuffer(0)
+    expect(() => buffer.read()).toThrow(BufferEmptyError)
+  })
+
+  test('zero sized buffer write fails', () => {
+    const buffer = new CircularBuffer(0)
+    expect(() => buffer.write('1')).toThrow(BufferFullError)
+  })
+
+  test('zero sized buffer force write fails', () => {
+    const buffer = new CircularBuffer(0)
+    expect(() => buffer.forceWrite('1')).toThrow(BufferFullError)
+  })
+
+  test('size cannot be smaller than zero', () => {
+    expect(() => new CircularBuffer(-1)).toThrow(BufferConstructorError)
+  })
+
   test('writing to full buffer should fail', () => {
     const buffer = new CircularBuffer(5)
     writeRange(buffer, ['1', '2', '3', '4', '5'])
@@ -49,6 +69,5 @@ describe('CircularBuffer', () => {
     expect(() => buffer.read()).toThrow(BufferEmptyError)
   })
 
-  // TODO: test 0 and 1 sizes
   // TODO: test length and cursor increase
 })

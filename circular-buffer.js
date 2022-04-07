@@ -16,6 +16,9 @@ class CircularBuffer {
   #head
 
   constructor(size) {
+    if (size < 0) {
+      throw new BufferConstructorError()
+    }
     this.#buffer_size = size
     this.#arr = new Array(size)
     this.#length = 0
@@ -64,6 +67,9 @@ class CircularBuffer {
   }
 
   forceWrite(value) {
+    if (this.#buffer_size === 0) {
+      throw new BufferFullError()
+    }
     const next = (this.#head + 1) % this.#buffer_size
 
     this.#set(next, value)
@@ -106,5 +112,12 @@ export class BufferEmptyError extends Error {
   constructor() {
     super('Buffer is empty')
     this.name = 'BufferEmptyError'
+  }
+}
+
+export class BufferConstructorError extends Error {
+  constructor() {
+    super('Buffer size cannot be less than zero')
+    this.name = 'BufferConstructorError'
   }
 }
