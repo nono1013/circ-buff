@@ -63,6 +63,7 @@ class CircularBuffer {
     if (this.#empty()) {
       throw new BufferEmptyError()
     }
+    console.log(this.#arr)
     return this.#get(this.#tail)
   }
 

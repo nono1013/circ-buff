@@ -15,6 +15,7 @@
   "dependencies": {},
   "scripts": {
     "test": "jest --no-cache ./*",
+    "cover": "jest --no-cache --coverage ./*",
     "watch": "jest --no-cache --watch ./*"
   }
 }

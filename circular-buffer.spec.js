@@ -21,6 +21,11 @@ describe('CircularBuffer', () => {
     expect(() => buffer.read()).toThrow(BufferEmptyError)
   })
 
+  test('clearing empty buffer should fail', () => {
+    const buffer = new CircularBuffer(1)
+    expect(() => buffer.clear()).toThrow(BufferEmptyError)
+  })
+
   test('can read an item just written', () => {
     const buffer = new CircularBuffer(1)
     buffer.write('1')
@@ -69,5 +74,25 @@ describe('CircularBuffer', () => {
     expect(() => buffer.read()).toThrow(BufferEmptyError)
   })
 
-  // TODO: test length and cursor increase
+  test('complex writes work correctly', () => {
+    const buffer = new CircularBuffer(3)
+
+    writeRange(buffer, ['1', '2', '3'])
+    expect(buffer.read()).toBe('1')
+
+    buffer.forceWrite('4') // 4, *2, 3
+    expect(buffer.read()).toBe('2')
+
+    buffer.forceWrite('5') // 4, 5, *3
+    expect(buffer.read()).toBe('3')
+
+    buffer.clear() // *4, 5, _
+    expect(buffer.read()).toBe('4')
+
+    buffer.forceWrite('6') // *4, 5, 6
+    expect(buffer.read()).toBe('4')
+
+    expectRange(buffer, ['4', '5', '6'])
+    expect(() => buffer.read()).toThrow(BufferEmptyError)
+  })
 })
